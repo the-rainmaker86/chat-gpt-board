@@ -9,4 +9,5 @@ urlpatterns = [
     path('comment/<int:pk>/reply/', views.add_reply, name='add_reply'),
     path('me/<str:username>/', views.profile, name='profile'),
     path('profile/customize/', views.customize_profile, name='customize_profile'),
+    path('accounts/profile', views.profile, name='profile')
 ]

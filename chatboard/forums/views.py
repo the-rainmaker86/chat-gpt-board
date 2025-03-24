@@ -1,10 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
-from .models import Post, Comment
+from .models import Post, Comment, Profile
 from .forms import PostForm, CommentForm
+
+def custom_logout(request):
+    logout(request)
+    return redirect('post_list')
 
 def post_list(request):
     posts = Post.objects.all().order_by("-created_at")
@@ -75,20 +80,20 @@ def customize_profile(request):
         profile_picture = request.FILES.get("profile_picture")
         image_url = request.POST.get("image_url", "")
         
-        # Update the User model
-        request.user.first_name = full_name  # or split into first_name and last_name as needed
+        # Update the User model (here we use first_name to store the full name; adjust as needed)
+        request.user.first_name = full_name
         request.user.save()
         
-        # Get or create the Profile for the user.
+        # Get (or create) the Profile object for the user
         profile, created = Profile.objects.get_or_create(user=request.user)
         profile.location = location
         if profile_picture:
             profile.image = profile_picture
-            # Optionally, clear image_url if a file was uploaded.
+            # Optionally clear any previously set image URL if a file is uploaded
             profile.image_url = ""
         elif image_url:
             profile.image_url = image_url
-            # Optionally, clear the image field if a URL is provided.
+            # Optionally clear the image file if a URL is provided
             profile.image = None
         profile.save()
         
