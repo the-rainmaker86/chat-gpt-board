@@ -2,11 +2,24 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from random import randint, choices 
+import string 
 
+import lorem
 # from forums.profile import Profile
-
-
+def seed_users(num):
+    for _ in range(num):
+        # Loop until a unique username is found.
+        while True:
+            username = f"user{randint(1, 10000)}"
+            if not User.objects.filter(username=username).exists():
+                break
+        # Use create_user so the password is hashed properly.
+        user = User.objects.create_user(username=username, password=f"password{randint(1, 1000000)}")
+        print(f"Created user: {user.username}")
+        
 class Post(models.Model):
+                
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     title = models.CharField(max_length=255)
     content = models.TextField()
