@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile - {{ profile_user.username }}</title>
+  <!-- Import Materialize CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <!-- Import Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="blue-grey lighten-5">
+  <!-- Navbar (optional) -->
+  <nav class="blue darken-3">
+    <div class="nav-wrapper container">
+      <a href="{% url 'post_list' %}" class="brand-logo">Message Board</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        {% if user.is_authenticated %}
+          <li>
+            <a href="{% url 'logout' %}" class="waves-effect waves-light btn red">
+              <i class="material-icons left">exit_to_app</i>Logout
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+  
+  <!-- Profile Content -->
+  <div class="container">
+    <div class="section">
+      <h1 class="center-align">Profile for 
+        <a href="{% url 'profile' username=profile_user.username %}" class="blue-text text-darken-2">
+          {{ profile_user.username }}
+        </a>
+      </h1>
+      <div class="card-panel white">
+        <div class="row valign-wrapper">
+          <div class="col s12 m4 center-align">
+            {% if profile_user.profile.image %}
+              <img src="{{ profile_user.profile.image.url }}" alt="Profile Picture" class="circle responsive-img">
+            {% elif profile_user.profile.image_url %}
+              <img src="{{ profile_user.profile.image_url }}" alt="Profile Picture" class="circle responsive-img">
+            {% else %}
+              <img src="/static/default_profile_picture.png" alt="Profile Picture" class="circle responsive-img">
+            {% endif %}
+          </div>
+          <div class="col s12 m8">
+            <h5>Name: {{ profile_user.get_full_name }}</h5>
+            <h5>Location: {{ profile_user.profile.location }}</h5>
+          </div>
+        </div>
+      </div>
+      <!-- Customize Profile Button -->
+      <div class="center-align">
+        <a class="waves-effect waves-light btn modal-trigger" href="#customizeModal">
+          <i class="material-icons left">edit</i>Customize Profile
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Customize Profile Modal Structure -->
+  <div id="customizeModal" class="modal">
+    <div class="modal-content">
+      <h4>Customize Profile</h4>
+      <form method="post" action="{% url 'customize_profile' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="input-field">
+          <input id="full_name" name="full_name" type="text" value="{{ profile_user.get_full_name }}">
+          <label for="full_name">Name</label>
+        </div>
+        <div class="input-field">
+          <input id="location" name="location" type="text" value="{{ profile_user.profile.location }}">
+          <label for="location">Location</label>
+        </div>
+        <div class="file-field input-field">
+          <div class="btn">
+            <span>Upload Picture</span>
+            <input type="file" name="profile_picture">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text" placeholder="Choose a file">
+          </div>
+        </div>
+        <div class="input-field">
+          <input id="image_url" name="image_url" type="text" placeholder="Or enter an image URL">
+          <label for="image_url">Image URL</label>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="modal-close btn waves-effect waves-light">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Import Materialize JavaScript and Initialize Modal -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var modals = document.querySelectorAll('.modal');
+      M.Modal.init(modals);
+    });
+  </script>
+</body>
+</html>
