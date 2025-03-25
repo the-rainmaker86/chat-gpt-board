@@ -4,8 +4,20 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
-from .models import Post, Comment, Profile
+from .models import Post, Comment, Profile, Board
 from .forms import PostForm, CommentForm
+
+def board_detail(request, name):
+    board = get_object_or_404(Board, name=name)
+    posts = board.posts.all().order_by("-created_at")
+    return render(request, "forums/board_detail.html", {
+        "board": board,
+        "posts": posts,
+    })
+
+def board_list(request):
+    boards = Board.objects.all().order_by("name")
+    return render(request, "chatboard/boards.html", {"boards": boards})
 
 def custom_logout(request):
     logout(request)

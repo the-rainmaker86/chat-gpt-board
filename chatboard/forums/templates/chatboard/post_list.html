@@ -8,6 +8,25 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body class="blue-grey lighten-5">
+  <nav class="blue darken-3">
+    <div class="nav-wrapper container">
+      <a href="{% url 'post_list' %}" class="brand-logo">Message Board</a>
+      <ul id="nav-mobile" class="left hide-on-med-and-down">
+        <li>
+          <a href="{% url 'board_list' %}" class="waves-effect waves-light btn-flat">Boards</a>
+        </li>
+      </ul>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        {% if user.is_authenticated %}
+          <li>
+            <a href="{% url 'logout' %}" class="waves-effect waves-light btn red">
+              <i class="material-icons left">exit_to_app</i>Logout
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
   {% comment %} {% extends "templates/chatboard/base.html" %} {% endcomment %}
   <div class="container">
     <h1 class="center-align">Message Board</h1>

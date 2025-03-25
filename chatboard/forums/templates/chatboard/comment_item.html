@@ -1,7 +1,9 @@
 <div class="card" style="margin-left: {{ level }}px; margin-top: 10px;">
     <div class="card-content">
       <p>
-        <strong>{{ comment.user.username }}</strong> on {{ comment.created_at }}:
+        <strong> <a href="{% url 'profile' username=comment.user.username %}" class="blue-text text-darken-2">
+            {{ comment.user.username }}
+          </a></strong> on {{ comment.created_at }}:
       </p>
       <p>{{ comment.content }}</p>
       
